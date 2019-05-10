@@ -1,0 +1,53 @@
+/*
+dark:           #332c50 #4c625a
+medium dark:    #46878f #7b9278
+medium light:   #94e344 #abc396
+light:          #e2f3e4 #dbf4b4
+*/
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    /* background-color: #332f35; */
+}
+.cards {
+    display: flex;
+    justify-content: center;
+    width: 500px;
+    height: 175px;
+    background-color: #7b9278;
+}
+#oponent .cards {
+    align-items: flex-start;
+}
+#player .cards {
+    align-items: flex-end;
+}
+.card {
+    width: 75px;
+    height: 112px;
+    background-color: #dbf4b4;
+    border-style: solid;
+    border-color: #4c625a;
+    margin: 15px 5px 15px 5px;
+    user-select: none; /* supported by Chrome and Opera */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+}
+.card-text {
+    color: #dbf4b4;
+}
+.card-top {
+    background-color: #dbf4b4;
+}
+.card-bottom {
+    background-color: #abc396;
+}
+.status-bar {
+    width: 500px;
+    height: 50px;
+    background-color: #4c625a;
+}
