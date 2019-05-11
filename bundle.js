@@ -38,6 +38,8 @@ var BoardController = function () {
                 });
             });
             this._view.renderOponentCards(displayCards);
+            this._view.renderPlayerHealth(this._model.getPlayerHealth());
+            this._view.renderOponentHealth(this._model.getOponentHealth());
         }
     }, {
         key: "handleEvent",
@@ -45,7 +47,7 @@ var BoardController = function () {
             event.stopPropagation();
             switch (event.type) {
                 case "click":
-                    this.clickHandler(event.target);
+                    this.clickHandler(event.currentTarget);
                     break;
                 default:
                     console.log(event.target);
@@ -264,21 +266,20 @@ var Board = function () {
         _classCallCheck(this, Board);
 
         var cards = [new card_1.Card(3, card_1.CardType.heal), new card_1.Card(1, card_1.CardType.shield), new card_1.Card(1, card_1.CardType.attack), new card_1.Card(3, card_1.CardType.attack), new card_1.Card(2, card_1.CardType.shield)];
-        this._player = new player_1.Player(10, 0, cards);
+        this._player = new player_1.Player(6, 0, cards);
         this._oponent = new player_1.Player(10, 0, cards);
     }
 
     _createClass(Board, [{
         key: "playPlayerCard",
         value: function playPlayerCard(index) {
-            this._player.useCard(index);
             var card = this._player.cards[index];
             if (card.type === card_1.CardType.attack) {
                 this._oponent.applyEffects(card);
             } else {
                 this._player.applyEffects(card);
             }
-            // Emit change in cards for view update
+            this._player.useCard(index);
         }
     }, {
         key: "getPlayerCards",
@@ -289,6 +290,16 @@ var Board = function () {
         key: "getOponentCards",
         value: function getOponentCards() {
             return this._oponent.cards;
+        }
+    }, {
+        key: "getPlayerHealth",
+        value: function getPlayerHealth() {
+            return this._player.health;
+        }
+    }, {
+        key: "getOponentHealth",
+        value: function getOponentHealth() {
+            return this._oponent.health;
         }
     }]);
 
@@ -322,6 +333,16 @@ var BoardView = function () {
             });
         }
     }, {
+        key: "renderPlayerHealth",
+        value: function renderPlayerHealth(health) {
+            this._renderHealth(health, document.querySelector("#player-health"));
+        }
+    }, {
+        key: "renderOponentHealth",
+        value: function renderOponentHealth(health) {
+            this._renderHealth(health, document.querySelector("#oponent-health"));
+        }
+    }, {
         key: "renderPlayerCards",
         value: function renderPlayerCards(cards) {
             this._renderCards(cards, this._getPlayerCards());
@@ -335,8 +356,13 @@ var BoardView = function () {
         key: "_renderCards",
         value: function _renderCards(cards, nodes) {
             for (var i = 0; i < cards.length; i++) {
-                nodes[i].innerHTML = this._cardTemplate(i, cards[i].points, cards[i].type);
+                nodes[i].innerHTML = this._cardTemplate(cards[i].points, cards[i].type);
             }
+        }
+    }, {
+        key: "_renderHealth",
+        value: function _renderHealth(health, node) {
+            node.innerHTML = this._healthTemplate(health);
         }
     }, {
         key: "_getPlayerCards",
@@ -355,11 +381,24 @@ var BoardView = function () {
         }
     }, {
         key: "_cardTemplate",
-        value: function _cardTemplate(cardindex, points, type) {
+        value: function _cardTemplate(points, type) {
             var template = "";
             var cardLabel = points.toString();
             var cardSuit = this._cardTypes[type];
-            template = "\n            <div id=\"" + cardindex + "\" class=\"card-value-top\">" + cardLabel + "</div>\n            <div id=\"" + cardindex + "\" class=\"card-suit\">" + cardSuit + "</div>\n            <div id=\"" + cardindex + "\" class=\"card-value-bottom\">" + cardLabel + "</div>\n        ";
+            template = "\n            <div class=\"card-value-top\">" + cardLabel + "</div>\n            <div class=\"card-suit\">" + cardSuit + "</div>\n            <div class=\"card-value-bottom\">" + cardLabel + "</div>\n        ";
+            return template;
+        }
+    }, {
+        key: "_healthTemplate",
+        value: function _healthTemplate(health) {
+            var template = "";
+            for (var i = 0; i < 10; i++) {
+                if (health <= i) {
+                    template += '<div class="health-indicator">🖤</div>\n';
+                } else {
+                    template += '<div class="health-indicator">❤️</div>\n';
+                }
+            }
             return template;
         }
     }]);

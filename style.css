@@ -60,9 +60,20 @@ body {
     background-color: #4c625a;
 }
 .health {
+    /* display: flex; */
+    display: inline-block;
     width: 50%;
+    max-width: 50%;
     height: 100%;
-    background-color: brown;
+    align-items: center;
+    /* background-color: brown; */
+}
+.health-indicator:not(:first-child) {
+    margin-left: -35px;
+}
+.health-indicator{
+    display: inline;
+    font-size: 32px;
 }
 .shield {
     width: 30%;
