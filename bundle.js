@@ -335,7 +335,7 @@ var BoardView = function () {
         key: "_renderCards",
         value: function _renderCards(cards, nodes) {
             for (var i = 0; i < cards.length; i++) {
-                nodes[i].innerHTML = cards[i].points.toString() + this._cardTypes[cards[i].type];
+                nodes[i].innerHTML = this._cardTemplate(i, cards[i].points, cards[i].type);
             }
         }
     }, {
@@ -352,6 +352,15 @@ var BoardView = function () {
         key: "_getCards",
         value: function _getCards(containerID) {
             return document.querySelectorAll("#" + containerID + " .card");
+        }
+    }, {
+        key: "_cardTemplate",
+        value: function _cardTemplate(cardindex, points, type) {
+            var template = "";
+            var cardLabel = points.toString();
+            var cardSuit = this._cardTypes[type];
+            template = "\n            <div id=\"" + cardindex + "\" class=\"card-value-top\">" + cardLabel + "</div>\n            <div id=\"" + cardindex + "\" class=\"card-suit\">" + cardSuit + "</div>\n            <div id=\"" + cardindex + "\" class=\"card-value-bottom\">" + cardLabel + "</div>\n        ";
+            return template;
         }
     }]);
 
