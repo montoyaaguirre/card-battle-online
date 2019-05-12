@@ -9,7 +9,11 @@ body {
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    /* background-color: #332f35; */
+    user-select: none; /* supported by Chrome and Opera */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
 }
 #game-container {
     background-color: #7b9278;
@@ -37,11 +41,6 @@ body {
     border-style: solid;
     border-color: #4c625a;
     margin: 15px 5px 15px 5px;
-    user-select: none; /* supported by Chrome and Opera */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
 }
 .card-suit {
     font-size: 24px;

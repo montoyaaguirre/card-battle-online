@@ -6,6 +6,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var game_manager_1 = require("../core/game-manager");
 
 var BoardController = function () {
     function BoardController(model, view) {
@@ -13,6 +14,7 @@ var BoardController = function () {
 
         this._model = model;
         this._view = view;
+        this._gm = new game_manager_1.GameManager(this._model.player, this._model.oponent);
         // Bind handlers to view events
         view.setCardClickHandler(this.handleEvent.bind(this));
     }
@@ -58,10 +60,48 @@ var BoardController = function () {
     }, {
         key: "clickHandler",
         value: function clickHandler(element) {
-            if (element.id) {
+            if (this._gm.getState() === game_manager_1.GameState.playerTurn) {
                 this._model.playPlayerCard(parseInt(element.id));
                 this.renderBoard();
+                this._gm.endPlayerTurn();
+                // TODO: Start and wait for Animation
+                this._gm.endPlayerAnimation();
+                if (this._gm.getState() === game_manager_1.GameState.gameOver) {
+                    this._gameover();
+                } else {
+                    this._oponentTurn();
+                }
             }
+        }
+    }, {
+        key: "_oponentTurn",
+        value: function _oponentTurn() {
+            if (this._gm.getState() === game_manager_1.GameState.oponentTurn) {
+                // TODO: get card index from AI
+                var cardIndex = 0;
+                this._model.playOponentCard(cardIndex);
+                this.renderBoard();
+                this._gm.endOponentTurn();
+                // TODO: Start and wait for Animation
+                this._gm.endOponentAnimation();
+            }
+            if (this._gm.getState() === game_manager_1.GameState.gameOver) {
+                this._gameover();
+            }
+        }
+    }, {
+        key: "_gameover",
+        value: function _gameover() {
+            console.log("GAME OVER!");
+            this._newGame();
+        }
+    }, {
+        key: "_newGame",
+        value: function _newGame() {
+            console.log("Staring a new game.");
+            this._model.newGame();
+            this.renderBoard();
+            this._gm.newGame(this._model.player, this._model.oponent);
         }
     }]);
 
@@ -70,7 +110,7 @@ var BoardController = function () {
 
 exports.BoardController = BoardController;
 
-},{}],2:[function(require,module,exports){
+},{"../core/game-manager":3}],2:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -109,14 +149,14 @@ var Card = function () {
     }, {
         key: "_getRandomCardType",
         value: function _getRandomCardType() {
-            var index = this._getRandomInt(0, 3);
+            var index = this._getRandomInt(0, 5);
             switch (index) {
                 case 0:
-                    return CardType.attack;
+                    return CardType.shield;
                 case 1:
                     return CardType.heal;
                 default:
-                    return CardType.shield;
+                    return CardType.attack;
             }
         }
     }, {
@@ -137,6 +177,83 @@ var Card = function () {
 exports.Card = Card;
 
 },{}],3:[function(require,module,exports){
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var GameState;
+(function (GameState) {
+    GameState[GameState["paused"] = 0] = "paused";
+    GameState[GameState["playerTurn"] = 1] = "playerTurn";
+    GameState[GameState["oponentTurn"] = 2] = "oponentTurn";
+    GameState[GameState["playerAnimation"] = 3] = "playerAnimation";
+    GameState[GameState["oponentAnimation"] = 4] = "oponentAnimation";
+    GameState[GameState["gameOver"] = 5] = "gameOver";
+})(GameState = exports.GameState || (exports.GameState = {}));
+
+var GameManager = function () {
+    function GameManager(player, oponent) {
+        _classCallCheck(this, GameManager);
+
+        this._gameState = GameState.playerTurn;
+        this.newGame(player, oponent);
+    }
+
+    _createClass(GameManager, [{
+        key: "getState",
+        value: function getState() {
+            return this._gameState;
+        }
+    }, {
+        key: "endPlayerTurn",
+        value: function endPlayerTurn() {
+            if (this._gameState === GameState.playerTurn) {
+                this._gameState = GameState.playerAnimation;
+            }
+        }
+    }, {
+        key: "endOponentTurn",
+        value: function endOponentTurn() {
+            if (this._gameState === GameState.oponentTurn) {
+                this._gameState = GameState.oponentAnimation;
+            }
+        }
+    }, {
+        key: "endPlayerAnimation",
+        value: function endPlayerAnimation() {
+            if (this._oponent.health > 0) {
+                this._gameState = GameState.oponentTurn;
+            } else {
+                this._gameState = GameState.gameOver;
+            }
+        }
+    }, {
+        key: "endOponentAnimation",
+        value: function endOponentAnimation() {
+            if (this._player.health > 0) {
+                this._gameState = GameState.playerTurn;
+            } else {
+                this._gameState = GameState.gameOver;
+            }
+        }
+    }, {
+        key: "newGame",
+        value: function newGame(player, oponent) {
+            this._player = player;
+            this._oponent = oponent;
+            this._gameState = GameState.playerTurn;
+        }
+    }]);
+
+    return GameManager;
+}();
+
+exports.GameManager = GameManager;
+
+},{}],4:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -201,9 +318,9 @@ var Player = function () {
         key: "_receiveAttack",
         value: function _receiveAttack(points) {
             if (this.shield > 0) {
-                this._shield -= points;
+                this.shield -= points;
             } else {
-                this._health -= points;
+                this.health -= points;
             }
         }
     }, {
@@ -239,7 +356,7 @@ var Player = function () {
 
 exports.Player = Player;
 
-},{"./card":2}],4:[function(require,module,exports){
+},{"./card":2}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -251,7 +368,7 @@ var view = new board_view_1.BoardView();
 var controller = new board_controller_1.BoardController(model, view);
 controller.renderBoard();
 
-},{"./controllers/board-controller":1,"./models/board-model":5,"./views/board-view":6}],5:[function(require,module,exports){
+},{"./controllers/board-controller":1,"./models/board-model":6,"./views/board-view":7}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -267,11 +384,19 @@ var Board = function () {
         _classCallCheck(this, Board);
 
         var cards = [new card_1.Card(3, card_1.CardType.heal), new card_1.Card(1, card_1.CardType.shield), new card_1.Card(1, card_1.CardType.attack), new card_1.Card(3, card_1.CardType.attack), new card_1.Card(2, card_1.CardType.shield)];
-        this._oponent = new player_1.Player(10, 2, cards);
-        this._player = new player_1.Player(6, 0, cards);
+        this._oponent = new player_1.Player(10, 0, cards);
+        this._player = new player_1.Player(10, 0, cards);
     }
 
     _createClass(Board, [{
+        key: "newGame",
+        value: function newGame() {
+            this._oponent.health = 10;
+            this._player.health = 10;
+            this._oponent.shield = 0;
+            this._player.shield = 0;
+        }
+    }, {
         key: "playPlayerCard",
         value: function playPlayerCard(index) {
             var card = this._player.cards[index];
@@ -281,6 +406,17 @@ var Board = function () {
                 this._player.applyEffects(card);
             }
             this._player.useCard(index);
+        }
+    }, {
+        key: "playOponentCard",
+        value: function playOponentCard(index) {
+            var card = this._oponent.cards[index];
+            if (card.type === card_1.CardType.attack) {
+                this._player.applyEffects(card);
+            } else {
+                this._oponent.applyEffects(card);
+            }
+            this._oponent.useCard(index);
         }
     }, {
         key: "getPlayerCards",
@@ -312,6 +448,16 @@ var Board = function () {
         value: function getOponentShield() {
             return this._oponent.shield;
         }
+    }, {
+        key: "player",
+        get: function get() {
+            return this._player;
+        }
+    }, {
+        key: "oponent",
+        get: function get() {
+            return this._oponent;
+        }
     }]);
 
     return Board;
@@ -319,7 +465,7 @@ var Board = function () {
 
 exports.Board = Board;
 
-},{"../core/card":2,"../core/player":3}],6:[function(require,module,exports){
+},{"../core/card":2,"../core/player":4}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -443,6 +589,6 @@ var BoardView = function () {
 
 exports.BoardView = BoardView;
 
-},{}]},{},[4])
+},{}]},{},[5])
 
 //# sourceMappingURL=bundle.js.map
