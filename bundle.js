@@ -40,6 +40,8 @@ var BoardController = function () {
             this._view.renderOponentCards(displayCards);
             this._view.renderPlayerHealth(this._model.getPlayerHealth());
             this._view.renderOponentHealth(this._model.getOponentHealth());
+            this._view.renderPlayerShield(this._model.getPlayerShield());
+            this._view.renderOponentShield(this._model.getOponentShield());
         }
     }, {
         key: "handleEvent",
@@ -50,7 +52,7 @@ var BoardController = function () {
                     this.clickHandler(event.currentTarget);
                     break;
                 default:
-                    console.log(event.target);
+                    break;
             }
         }
     }, {
@@ -168,7 +170,6 @@ var Player = function () {
         key: "useCard",
         value: function useCard(index) {
             var card = this._cards[index];
-            console.log("Used card at index " + index + "\nType: " + card.type + " Points: " + card.points);
             card.randomize(); // Simulate discarding card and drawing a new one.
         }
     }, {
@@ -266,8 +267,8 @@ var Board = function () {
         _classCallCheck(this, Board);
 
         var cards = [new card_1.Card(3, card_1.CardType.heal), new card_1.Card(1, card_1.CardType.shield), new card_1.Card(1, card_1.CardType.attack), new card_1.Card(3, card_1.CardType.attack), new card_1.Card(2, card_1.CardType.shield)];
+        this._oponent = new player_1.Player(10, 2, cards);
         this._player = new player_1.Player(6, 0, cards);
-        this._oponent = new player_1.Player(10, 0, cards);
     }
 
     _createClass(Board, [{
@@ -300,6 +301,16 @@ var Board = function () {
         key: "getOponentHealth",
         value: function getOponentHealth() {
             return this._oponent.health;
+        }
+    }, {
+        key: "getPlayerShield",
+        value: function getPlayerShield() {
+            return this._player.shield;
+        }
+    }, {
+        key: "getOponentShield",
+        value: function getOponentShield() {
+            return this._oponent.shield;
         }
     }]);
 
@@ -353,6 +364,16 @@ var BoardView = function () {
             this._renderCards(cards, this._getOponentCards());
         }
     }, {
+        key: "renderPlayerShield",
+        value: function renderPlayerShield(shields) {
+            this._renderShields(shields, document.querySelector("#player-shield"));
+        }
+    }, {
+        key: "renderOponentShield",
+        value: function renderOponentShield(shields) {
+            this._renderShields(shields, document.querySelector("#oponent-shield"));
+        }
+    }, {
         key: "_renderCards",
         value: function _renderCards(cards, nodes) {
             for (var i = 0; i < cards.length; i++) {
@@ -363,6 +384,11 @@ var BoardView = function () {
         key: "_renderHealth",
         value: function _renderHealth(health, node) {
             node.innerHTML = this._healthTemplate(health);
+        }
+    }, {
+        key: "_renderShields",
+        value: function _renderShields(shields, node) {
+            node.innerHTML = this._shieldTemplate(shields);
         }
     }, {
         key: "_getPlayerCards",
@@ -398,6 +424,15 @@ var BoardView = function () {
                 } else {
                     template += '<div class="health-indicator">❤️</div>\n';
                 }
+            }
+            return template;
+        }
+    }, {
+        key: "_shieldTemplate",
+        value: function _shieldTemplate(shield) {
+            var template = "";
+            for (var i = 0; i < shield; i++) {
+                template += '<div class="shield-indicator">🛡️</div>\n';
             }
             return template;
         }

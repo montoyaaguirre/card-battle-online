@@ -11,6 +11,9 @@ body {
     align-items: center;
     /* background-color: #332f35; */
 }
+#game-container {
+    background-color: #7b9278;
+}
 .cards {
     display: flex;
     justify-content: center;
@@ -41,14 +44,17 @@ body {
     -ms-user-select: none; /* Internet Explorer/Edge */
 }
 .card-suit {
+    font-size: 24px;
     text-align: center;
 }
 .card-value-top {
+    font-size: 20px;
     text-align: left;
     color: #dbf4b4;
     background-color: #4c625a;
 }
 .card-value-bottom {
+    font-size: 20px;
     text-align: right;
     color: #dbf4b4;
     background-color: #4c625a;
@@ -60,13 +66,11 @@ body {
     background-color: #4c625a;
 }
 .health {
-    /* display: flex; */
     display: inline-block;
     width: 50%;
     max-width: 50%;
     height: 100%;
     align-items: center;
-    /* background-color: brown; */
 }
 .health-indicator:not(:first-child) {
     margin-left: -35px;
@@ -75,10 +79,15 @@ body {
     display: inline;
     font-size: 32px;
 }
+.shield-indicator{
+    display: inline;
+    font-size: 32px;
+}
 .shield {
+    display: inline-block;
     width: 30%;
     height: 100%;
-    background-color: burlywood;
+    align-items: center;
 }
 .result {
     width: 20%;
