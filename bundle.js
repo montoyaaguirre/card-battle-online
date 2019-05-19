@@ -93,6 +93,7 @@ var BoardController = function () {
         key: "_gameover",
         value: function _gameover() {
             console.log("GAME OVER!");
+            this._view.displayGameOutcome(this._model.getPlayerHealth() > 0);
             this._newGame();
         }
     }, {
@@ -518,6 +519,11 @@ var BoardView = function () {
         key: "renderOponentShield",
         value: function renderOponentShield(shields) {
             this._renderShields(shields, document.querySelector("#oponent-shield"));
+        }
+    }, {
+        key: "displayGameOutcome",
+        value: function displayGameOutcome(playerWin) {
+            playerWin ? window.alert("You win!") : window.alert("You lose!");
         }
     }, {
         key: "_renderCards",

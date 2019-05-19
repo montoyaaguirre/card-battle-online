@@ -37,7 +37,7 @@ body {
     justify-content: space-between;
     width: 75px;
     height: 112px;
-    background-color: #dbf4b4;
+    background-color: #4c625a;
     border-style: solid;
     border-color: #4c625a;
     margin: 15px 5px 15px 5px;
@@ -45,6 +45,7 @@ body {
 .card-suit {
     font-size: 24px;
     text-align: center;
+    background-color: #dbf4b4;
 }
 .card-value-top {
     font-size: 20px;
@@ -92,4 +93,7 @@ body {
     width: 20%;
     height: 100%;
     background-color: rebeccapurple;
+}
+#player-cards .card:hover:not(.growing):not(.shrinking) {
+    transform: scale(1.2);
 }
