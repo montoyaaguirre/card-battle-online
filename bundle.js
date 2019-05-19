@@ -137,8 +137,12 @@ var Card = function () {
     _createClass(Card, [{
         key: "randomize",
         value: function randomize() {
-            this._points = this._getRandomInt(1, 4);
             this._type = this._getRandomCardType();
+            if (this._type === CardType.shield) {
+                this._points = this._getRandomInt(1, 3);
+            } else {
+                this._points = this._getRandomInt(1, 4);
+            }
         }
     }, {
         key: "_getRandomInt",
