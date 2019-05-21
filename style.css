@@ -41,6 +41,7 @@ body {
     border-style: solid;
     border-color: #4c625a;
     margin: 15px 5px 15px 5px;
+    transition: transform 500ms ease, translate 300ms ease;
 }
 .card-suit {
     font-size: 24px;
@@ -94,6 +95,6 @@ body {
     height: 100%;
     background-color: rebeccapurple;
 }
-#player-cards .card:hover:not(.growing):not(.shrinking) {
+#player-cards .card:hover {
     transform: scale(1.2);
 }
