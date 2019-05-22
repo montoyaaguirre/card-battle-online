@@ -21,8 +21,8 @@ body {
 .cards {
     display: flex;
     justify-content: center;
-    width: 500px;
-    height: 175px;
+    width: 100vmin;
+    height: 35vmin;
     background-color: #7b9278;
 }
 #oponent .cards {
@@ -35,12 +35,12 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 75px;
-    height: 112px;
+    width: 15vmin;
+    height: 22vmin;
     background-color: #4c625a;
     border-style: solid;
     border-color: #4c625a;
-    margin: 15px 5px 15px 5px;
+    margin: 3vmin 1vmin 3vmin 1vmin;
 }
 .card:not(.hidden) {
     transition: transform 300ms ease, translate 200ms ease;
@@ -50,26 +50,26 @@ body {
     transition: transform 10ms, translate 10ms;
 }
 .card-suit {
-    font-size: 24px;
+    font-size: 4vmin;
     text-align: center;
     background-color: #dbf4b4;
 }
 .card-value-top {
-    font-size: 20px;
+    font-size: 4vmin;
     text-align: left;
     color: #dbf4b4;
     background-color: #4c625a;
 }
 .card-value-bottom {
-    font-size: 20px;
+    font-size: 4vmin;
     text-align: right;
     color: #dbf4b4;
     background-color: #4c625a;
 }
 .status-bar {
     display: flex;
-    width: 500px;
-    height: 50px;
+    width: 100vmin;
+    height: 10vmin;
     background-color: #4c625a;
 }
 .health {
@@ -80,15 +80,15 @@ body {
     align-items: center;
 }
 .health-indicator:not(:first-child) {
-    margin-left: -35px;
+    margin-left: -6vmin;
 }
 .health-indicator{
     display: inline;
-    font-size: 32px;
+    font-size: 6vmin;
 }
 .shield-indicator{
     display: inline;
-    font-size: 32px;
+    font-size: 6vmin;
 }
 .shield {
     display: inline-block;
@@ -104,7 +104,7 @@ body {
 }
 .turn-indicator{
     display: inline;
-    font-size: 32px;
+    font-size: 6vmin;
 }
 #player-cards .card:hover {
     transform: scale(1.2);

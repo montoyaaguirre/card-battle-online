@@ -8648,7 +8648,7 @@ var BoardView = function () {
                             case 0:
                                 card = this._getPlayerCards()[cardIndex];
                                 _context.next = 3;
-                                return this._translate(card, 0, -50);
+                                return this._translate(card, 0, -10);
 
                             case 3:
                                 card.classList.add("hidden");
@@ -8709,7 +8709,7 @@ var BoardView = function () {
 
                             case 3:
                                 _context3.next = 5;
-                                return this._translate(card, 0, 50);
+                                return this._translate(card, 0, 10);
 
                             case 5:
                                 card.classList.add("hidden");
@@ -8878,8 +8878,8 @@ var BoardView = function () {
                                     elem.addEventListener("transitionend", function (e) {
                                         resolve();
                                     });
-                                    elem.style.transform = "translateX(" + x + "px)";
-                                    elem.style.transform = "translateY(" + y + "px)";
+                                    elem.style.transform = "translateX(" + x + "vmin)";
+                                    elem.style.transform = "translateY(" + y + "vmin)";
                                 }));
 
                             case 1:
