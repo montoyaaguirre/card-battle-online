@@ -41,7 +41,13 @@ body {
     border-style: solid;
     border-color: #4c625a;
     margin: 15px 5px 15px 5px;
-    transition: transform 500ms ease, translate 300ms ease;
+}
+.card:not(.hidden) {
+    transition: transform 300ms ease, translate 200ms ease;
+}
+.card.hidden {
+    visibility: hidden;
+    transition: transform 10ms, translate 10ms;
 }
 .card-suit {
     font-size: 24px;
@@ -91,9 +97,14 @@ body {
     align-items: center;
 }
 .result {
+    display: inline-block;
+    text-align: right;
     width: 20%;
     height: 100%;
-    background-color: rebeccapurple;
+}
+.turn-indicator{
+    display: inline;
+    font-size: 32px;
 }
 #player-cards .card:hover {
     transform: scale(1.2);

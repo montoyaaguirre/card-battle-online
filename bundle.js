@@ -7983,6 +7983,7 @@ var __awaiter = undefined && undefined.__awaiter || function (thisArg, _argument
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var game_manager_1 = require("../core/game-manager");
+var oponent_ai_1 = require("../core/oponent-ai");
 
 var BoardController = function () {
     function BoardController(model, view) {
@@ -7991,8 +7992,10 @@ var BoardController = function () {
         this._model = model;
         this._view = view;
         this._gm = new game_manager_1.GameManager(this._model.player, this._model.oponent);
+        this._oponent = new oponent_ai_1.OponentAI();
         // Bind handlers to view events
         view.setCardClickHandler(this.handleEvent.bind(this));
+        this._view.setTurn(true);
     }
 
     _createClass(BoardController, [{
@@ -8084,32 +8087,33 @@ var BoardController = function () {
                         switch (_context2.prev = _context2.next) {
                             case 0:
                                 if (!(this._gm.getState() === game_manager_1.GameState.oponentTurn)) {
-                                    _context2.next = 10;
+                                    _context2.next = 12;
                                     break;
                                 }
 
-                                // TODO: get card index from AI
-                                cardIndex = 0;
+                                this._view.setTurn(false);
+                                cardIndex = this._oponent.chooseCard();
 
                                 this._gm.endOponentTurn();
                                 this._model.playOponentCard(cardIndex);
-                                _context2.next = 6;
+                                _context2.next = 7;
                                 return this._view.animateOponentCardUse(cardIndex);
 
-                            case 6:
+                            case 7:
                                 this.renderBoard();
-                                _context2.next = 9;
+                                _context2.next = 10;
                                 return this._view.animateOponentCardDraw(cardIndex);
 
-                            case 9:
-                                this._gm.endOponentAnimation();
-
                             case 10:
+                                this._gm.endOponentAnimation();
+                                this._view.setTurn(true);
+
+                            case 12:
                                 if (this._gm.getState() === game_manager_1.GameState.gameOver) {
                                     this._gameover();
                                 }
 
-                            case 11:
+                            case 13:
                             case "end":
                                 return _context2.stop();
                         }
@@ -8130,6 +8134,7 @@ var BoardController = function () {
             console.log("Staring a new game.");
             this._model.newGame();
             this.renderBoard();
+            this._view.setTurn(true);
             this._gm.newGame(this._model.player, this._model.oponent);
         }
     }]);
@@ -8139,7 +8144,7 @@ var BoardController = function () {
 
 exports.BoardController = BoardController;
 
-},{"../core/game-manager":334}],333:[function(require,module,exports){
+},{"../core/game-manager":334,"../core/oponent-ai":335}],333:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8158,8 +8163,12 @@ var Card = function () {
     function Card(points, type) {
         _classCallCheck(this, Card);
 
-        this._points = points;
-        this._type = type;
+        if (points === undefined || type === undefined) {
+            this.randomize();
+        } else {
+            this._points = points;
+            this._type = type;
+        }
     }
 
     _createClass(Card, [{
@@ -8294,6 +8303,39 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 Object.defineProperty(exports, "__esModule", { value: true });
+
+var OponentAI = function () {
+    function OponentAI() {
+        _classCallCheck(this, OponentAI);
+    }
+
+    _createClass(OponentAI, [{
+        key: "chooseCard",
+        value: function chooseCard() {
+            return this._getRandomInt(0, 5);
+        }
+    }, {
+        key: "_getRandomInt",
+        value: function _getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min)) + min;
+        }
+    }]);
+
+    return OponentAI;
+}();
+
+exports.OponentAI = OponentAI;
+
+},{}],336:[function(require,module,exports){
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var card_1 = require("./card");
 
 var Player = function () {
@@ -8304,7 +8346,11 @@ var Player = function () {
         this._maxShield = 2;
         this._health = health;
         this._shield = shield;
-        this._cards = this._cloneCards(cards);
+        if (cards !== undefined) {
+            this._cards = this._cloneCards(cards);
+        } else {
+            this._cards = [new card_1.Card(), new card_1.Card(), new card_1.Card(), new card_1.Card(), new card_1.Card()];
+        }
     }
 
     _createClass(Player, [{
@@ -8389,7 +8435,7 @@ var Player = function () {
 
 exports.Player = Player;
 
-},{"./card":333}],336:[function(require,module,exports){
+},{"./card":333}],337:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -8401,7 +8447,7 @@ var view = new board_view_1.BoardView();
 var controller = new board_controller_1.BoardController(model, view);
 controller.renderBoard();
 
-},{"./controllers/board-controller":332,"./models/board-model":337,"./views/board-view":338}],337:[function(require,module,exports){
+},{"./controllers/board-controller":332,"./models/board-model":338,"./views/board-view":339}],338:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8416,9 +8462,8 @@ var Board = function () {
     function Board() {
         _classCallCheck(this, Board);
 
-        var cards = [new card_1.Card(3, card_1.CardType.heal), new card_1.Card(1, card_1.CardType.shield), new card_1.Card(1, card_1.CardType.attack), new card_1.Card(3, card_1.CardType.attack), new card_1.Card(2, card_1.CardType.shield)];
-        this._oponent = new player_1.Player(10, 0, cards);
-        this._player = new player_1.Player(10, 0, cards);
+        this._oponent = new player_1.Player(10, 0);
+        this._player = new player_1.Player(10, 0);
     }
 
     _createClass(Board, [{
@@ -8498,7 +8543,7 @@ var Board = function () {
 
 exports.Board = Board;
 
-},{"../core/card":333,"../core/player":335}],338:[function(require,module,exports){
+},{"../core/card":333,"../core/player":336}],339:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8545,6 +8590,17 @@ var BoardView = function () {
             cards.forEach(function (element) {
                 element.addEventListener('click', handler);
             });
+        }
+    }, {
+        key: "setTurn",
+        value: function setTurn(player) {
+            // Clear
+            this._getResultBox("player").innerHTML = "";
+            this._getResultBox("oponent").innerHTML = "";
+            // Set
+            var template = '<div class="turn-indicator">👈</div>\n';
+            var containerId = player ? "player" : "oponent";
+            this._getResultBox(containerId).innerHTML = template;
         }
     }, {
         key: "renderPlayerHealth",
@@ -8595,6 +8651,9 @@ var BoardView = function () {
                                 return this._translate(card, 0, -50);
 
                             case 3:
+                                card.classList.add("hidden");
+
+                            case 4:
                             case "end":
                                 return _context.stop();
                         }
@@ -8612,10 +8671,22 @@ var BoardView = function () {
                         switch (_context2.prev = _context2.next) {
                             case 0:
                                 card = this._getPlayerCards()[cardIndex];
+                                _context2.next = 3;
+                                return this._translate(card, 0, 0);
 
+                            case 3:
+                                _context2.next = 5;
+                                return this._scale(card, .2);
+
+                            case 5:
+                                card.classList.remove("hidden");
+                                _context2.next = 8;
+                                return this._scale(card, 1);
+
+                            case 8:
                                 card.removeAttribute("style");
 
-                            case 2:
+                            case 9:
                             case "end":
                                 return _context2.stop();
                         }
@@ -8637,10 +8708,13 @@ var BoardView = function () {
                                 return this._scale(card, 1.2);
 
                             case 3:
-                                card.setAttribute("style", "display: none;");
-                                card.removeAttribute("style");
+                                _context3.next = 5;
+                                return this._translate(card, 0, 50);
 
                             case 5:
+                                card.classList.add("hidden");
+
+                            case 6:
                             case "end":
                                 return _context3.stop();
                         }
@@ -8658,10 +8732,22 @@ var BoardView = function () {
                         switch (_context4.prev = _context4.next) {
                             case 0:
                                 card = this._getOponentCards()[cardIndex];
+                                _context4.next = 3;
+                                return this._translate(card, 0, 0);
 
+                            case 3:
+                                _context4.next = 5;
+                                return this._scale(card, .2);
+
+                            case 5:
+                                card.classList.remove("hidden");
+                                _context4.next = 8;
+                                return this._scale(card, 1);
+
+                            case 8:
                                 card.removeAttribute("style");
 
-                            case 2:
+                            case 9:
                             case "end":
                                 return _context4.stop();
                         }
@@ -8695,6 +8781,11 @@ var BoardView = function () {
             for (var i = 0; i < cards.length; i++) {
                 nodes[i].innerHTML = this._cardTemplate(cards[i].points, cards[i].type);
             }
+        }
+    }, {
+        key: "_getResultBox",
+        value: function _getResultBox(containerID) {
+            return document.querySelector("#" + containerID + " .result");
         }
     }, {
         key: "_renderHealth",
@@ -8806,6 +8897,6 @@ var BoardView = function () {
 
 exports.BoardView = BoardView;
 
-},{}]},{},[1,336])
+},{}]},{},[1,337])
 
 //# sourceMappingURL=bundle.js.map
