@@ -8047,21 +8047,28 @@ var BoardController = function () {
         key: "_playerTurn",
         value: function _playerTurn(cardIndex) {
             return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+                var cardEffect;
                 return regeneratorRuntime.wrap(function _callee$(_context) {
                     while (1) {
                         switch (_context.prev = _context.next) {
                             case 0:
                                 this._gm.endPlayerTurn();
+                                cardEffect = this._model.getPlayerCardEffect(cardIndex);
+
                                 this._model.playPlayerCard(cardIndex);
-                                _context.next = 4;
+                                _context.next = 5;
                                 return this._view.animatePlayerCardUse(cardIndex);
 
-                            case 4:
+                            case 5:
                                 this.renderBoard();
-                                _context.next = 7;
+                                _context.next = 8;
+                                return this._view.renderCardEffect(cardEffect);
+
+                            case 8:
+                                _context.next = 10;
                                 return this._view.animatePlayerCardDraw(cardIndex);
 
-                            case 7:
+                            case 10:
                                 this._gm.endPlayerAnimation();
                                 if (this._gm.getState() === game_manager_1.GameState.gameOver) {
                                     this._gameover();
@@ -8069,7 +8076,7 @@ var BoardController = function () {
                                     this._oponentTurn();
                                 }
 
-                            case 9:
+                            case 12:
                             case "end":
                                 return _context.stop();
                         }
@@ -8081,13 +8088,13 @@ var BoardController = function () {
         key: "_oponentTurn",
         value: function _oponentTurn() {
             return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-                var cardIndex;
+                var cardIndex, cardEffect;
                 return regeneratorRuntime.wrap(function _callee2$(_context2) {
                     while (1) {
                         switch (_context2.prev = _context2.next) {
                             case 0:
                                 if (!(this._gm.getState() === game_manager_1.GameState.oponentTurn)) {
-                                    _context2.next = 12;
+                                    _context2.next = 15;
                                     break;
                                 }
 
@@ -8095,25 +8102,31 @@ var BoardController = function () {
                                 cardIndex = this._oponent.chooseCard();
 
                                 this._gm.endOponentTurn();
+                                cardEffect = this._model.getOponentCardEffect(cardIndex);
+
                                 this._model.playOponentCard(cardIndex);
-                                _context2.next = 7;
+                                _context2.next = 8;
                                 return this._view.animateOponentCardUse(cardIndex);
 
-                            case 7:
+                            case 8:
                                 this.renderBoard();
-                                _context2.next = 10;
+                                _context2.next = 11;
+                                return this._view.renderCardEffect(cardEffect);
+
+                            case 11:
+                                _context2.next = 13;
                                 return this._view.animateOponentCardDraw(cardIndex);
 
-                            case 10:
+                            case 13:
                                 this._gm.endOponentAnimation();
                                 this._view.setTurn(true);
 
-                            case 12:
+                            case 15:
                                 if (this._gm.getState() === game_manager_1.GameState.gameOver) {
                                     this._gameover();
                                 }
 
-                            case 13:
+                            case 16:
                             case "end":
                                 return _context2.stop();
                         }
@@ -8144,7 +8157,22 @@ var BoardController = function () {
 
 exports.BoardController = BoardController;
 
-},{"../core/game-manager":334,"../core/oponent-ai":335}],333:[function(require,module,exports){
+},{"../core/game-manager":335,"../core/oponent-ai":336}],333:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Target;
+(function (Target) {
+    Target[Target["player"] = 0] = "player";
+    Target[Target["oponent"] = 1] = "oponent";
+})(Target = exports.Target || (exports.Target = {}));
+var MeterType;
+(function (MeterType) {
+    MeterType[MeterType["hearts"] = 0] = "hearts";
+    MeterType[MeterType["shields"] = 1] = "shields";
+})(MeterType = exports.MeterType || (exports.MeterType = {}));
+
+},{}],334:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8218,7 +8246,7 @@ var Card = function () {
 
 exports.Card = Card;
 
-},{}],334:[function(require,module,exports){
+},{}],335:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8295,7 +8323,7 @@ var GameManager = function () {
 
 exports.GameManager = GameManager;
 
-},{}],335:[function(require,module,exports){
+},{}],336:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8328,7 +8356,7 @@ var OponentAI = function () {
 
 exports.OponentAI = OponentAI;
 
-},{}],336:[function(require,module,exports){
+},{}],337:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8339,11 +8367,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var card_1 = require("./card");
 
 var Player = function () {
-    function Player(health, shield, cards) {
+    function Player(maxHealth, maxShield, health, shield, cards) {
         _classCallCheck(this, Player);
 
-        this._maxHealth = 10;
-        this._maxShield = 2;
+        this._maxHealth = maxHealth;
+        this._maxShield = maxShield;
         this._health = health;
         this._shield = shield;
         if (cards !== undefined) {
@@ -8435,7 +8463,7 @@ var Player = function () {
 
 exports.Player = Player;
 
-},{"./card":333}],337:[function(require,module,exports){
+},{"./card":334}],338:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -8447,7 +8475,7 @@ var view = new board_view_1.BoardView();
 var controller = new board_controller_1.BoardController(model, view);
 controller.renderBoard();
 
-},{"./controllers/board-controller":332,"./models/board-model":338,"./views/board-view":339}],338:[function(require,module,exports){
+},{"./controllers/board-controller":332,"./models/board-model":339,"./views/board-view":340}],339:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8457,13 +8485,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 Object.defineProperty(exports, "__esModule", { value: true });
 var player_1 = require("../core/player");
 var card_1 = require("../core/card");
+var card_effect_1 = require("../core/card-effect");
 
 var Board = function () {
     function Board() {
         _classCallCheck(this, Board);
 
-        this._oponent = new player_1.Player(10, 0);
-        this._player = new player_1.Player(10, 0);
+        this._maxHealth = 10;
+        this._maxShield = 2;
+        this._oponent = new player_1.Player(this._maxHealth, this._maxShield, 10, 0);
+        this._player = new player_1.Player(this._maxHealth, this._maxShield, 10, 0);
     }
 
     _createClass(Board, [{
@@ -8495,6 +8526,68 @@ var Board = function () {
                 this._oponent.applyEffects(card);
             }
             this._oponent.useCard(index);
+        }
+    }, {
+        key: "getPlayerCardEffect",
+        value: function getPlayerCardEffect(cardIndex) {
+            return this._getCardEffect(this._player, this._oponent, cardIndex);
+        }
+    }, {
+        key: "getOponentCardEffect",
+        value: function getOponentCardEffect(cardIndex) {
+            return this._getCardEffect(this._oponent, this._player, cardIndex);
+        }
+    }, {
+        key: "_getCardEffect",
+        value: function _getCardEffect(player, oponent, cardIndex) {
+            var card = player.cards[cardIndex];
+            var source = player === this._player ? card_effect_1.Target.player : card_effect_1.Target.oponent;
+            var target = player === this._player ? card_effect_1.Target.oponent : card_effect_1.Target.player;
+            // heart
+            if (card.type === card_1.CardType.heal) {
+                var points = card.points;
+                if (player.health + points > this._maxHealth) {
+                    points -= player.health + points - this._maxHealth;
+                }
+                return {
+                    target: source,
+                    type: card_effect_1.MeterType.hearts,
+                    points: points
+                };
+            }
+            // shield
+            if (card.type === card_1.CardType.shield) {
+                var _points = card.points;
+                if (player.shield + _points > this._maxShield) {
+                    _points -= player.shield + _points - this._maxShield;
+                }
+                return {
+                    target: source,
+                    type: card_effect_1.MeterType.shields,
+                    points: _points
+                };
+            }
+            // attack
+            if (card.type === card_1.CardType.attack) {
+                var _points2 = -card.points;
+                var type = void 0;
+                if (oponent.shield > 0) {
+                    type = card_effect_1.MeterType.shields;
+                } else {
+                    type = card_effect_1.MeterType.hearts;
+                }
+                if (type === card_effect_1.MeterType.shields && oponent.shield < Math.abs(_points2)) {
+                    _points2 = -oponent.shield;
+                }
+                if (type === card_effect_1.MeterType.hearts && oponent.health < Math.abs(_points2)) {
+                    _points2 = -oponent.health;
+                }
+                return {
+                    target: target,
+                    type: type,
+                    points: _points2
+                };
+            }
         }
     }, {
         key: "getPlayerCards",
@@ -8543,7 +8636,7 @@ var Board = function () {
 
 exports.Board = Board;
 
-},{"../core/card":333,"../core/player":336}],339:[function(require,module,exports){
+},{"../core/card":334,"../core/card-effect":333,"../core/player":337}],340:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8575,6 +8668,7 @@ var __awaiter = undefined && undefined.__awaiter || function (thisArg, _argument
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var card_effect_1 = require("../core/card-effect");
 
 var BoardView = function () {
     function BoardView() {
@@ -8605,12 +8699,12 @@ var BoardView = function () {
     }, {
         key: "renderPlayerHealth",
         value: function renderPlayerHealth(health) {
-            this._renderHealth(health, document.querySelector("#player-health"));
+            this._renderHealth(health, document.querySelector("#player-health .hearts-container"));
         }
     }, {
         key: "renderOponentHealth",
         value: function renderOponentHealth(health) {
-            this._renderHealth(health, document.querySelector("#oponent-health"));
+            this._renderHealth(health, document.querySelector("#oponent-health .hearts-container"));
         }
     }, {
         key: "renderPlayerCards",
@@ -8625,12 +8719,42 @@ var BoardView = function () {
     }, {
         key: "renderPlayerShield",
         value: function renderPlayerShield(shields) {
-            this._renderShields(shields, document.querySelector("#player-shield"));
+            this._renderShields(shields, document.querySelector("#player-shield .shields-container"));
         }
     }, {
         key: "renderOponentShield",
         value: function renderOponentShield(shields) {
-            this._renderShields(shields, document.querySelector("#oponent-shield"));
+            this._renderShields(shields, document.querySelector("#oponent-shield .shields-container"));
+        }
+    }, {
+        key: "renderCardEffect",
+        value: function renderCardEffect(effect) {
+            return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+                var template, playerId, container, displayElement;
+                return regeneratorRuntime.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                template = this._effectTemplate(effect.points);
+                                playerId = effect.target === card_effect_1.Target.player ? "player" : "oponent";
+                                container = effect.type === card_effect_1.MeterType.hearts ? "hearts" : "shields";
+                                displayElement = document.querySelector("#" + playerId + " ." + container + "-indicator");
+
+                                displayElement.innerHTML = template;
+                                _context.next = 7;
+                                return this._fade(displayElement);
+
+                            case 7:
+                                displayElement.innerHTML = "";
+                                displayElement.classList.remove("fade");
+
+                            case 9:
+                            case "end":
+                                return _context.stop();
+                        }
+                    }
+                }, _callee, this);
+            }));
         }
     }, {
         key: "displayGameOutcome",
@@ -8640,30 +8764,6 @@ var BoardView = function () {
     }, {
         key: "animatePlayerCardUse",
         value: function animatePlayerCardUse(cardIndex) {
-            return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-                var card;
-                return regeneratorRuntime.wrap(function _callee$(_context) {
-                    while (1) {
-                        switch (_context.prev = _context.next) {
-                            case 0:
-                                card = this._getPlayerCards()[cardIndex];
-                                _context.next = 3;
-                                return this._translate(card, 0, -10);
-
-                            case 3:
-                                card.classList.add("hidden");
-
-                            case 4:
-                            case "end":
-                                return _context.stop();
-                        }
-                    }
-                }, _callee, this);
-            }));
-        }
-    }, {
-        key: "animatePlayerCardDraw",
-        value: function animatePlayerCardDraw(cardIndex) {
             return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
                 var card;
                 return regeneratorRuntime.wrap(function _callee2$(_context2) {
@@ -8672,21 +8772,12 @@ var BoardView = function () {
                             case 0:
                                 card = this._getPlayerCards()[cardIndex];
                                 _context2.next = 3;
-                                return this._translate(card, 0, 0);
+                                return this._translate(card, 0, -10);
 
                             case 3:
-                                _context2.next = 5;
-                                return this._scale(card, .2);
+                                card.classList.add("hidden");
 
-                            case 5:
-                                card.classList.remove("hidden");
-                                _context2.next = 8;
-                                return this._scale(card, 1);
-
-                            case 8:
-                                card.removeAttribute("style");
-
-                            case 9:
+                            case 4:
                             case "end":
                                 return _context2.stop();
                         }
@@ -8695,26 +8786,31 @@ var BoardView = function () {
             }));
         }
     }, {
-        key: "animateOponentCardUse",
-        value: function animateOponentCardUse(cardIndex) {
+        key: "animatePlayerCardDraw",
+        value: function animatePlayerCardDraw(cardIndex) {
             return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
                 var card;
                 return regeneratorRuntime.wrap(function _callee3$(_context3) {
                     while (1) {
                         switch (_context3.prev = _context3.next) {
                             case 0:
-                                card = this._getOponentCards()[cardIndex];
+                                card = this._getPlayerCards()[cardIndex];
                                 _context3.next = 3;
-                                return this._scale(card, 1.2);
+                                return this._translate(card, 0, 0);
 
                             case 3:
                                 _context3.next = 5;
-                                return this._translate(card, 0, 10);
+                                return this._scale(card, .2);
 
                             case 5:
-                                card.classList.add("hidden");
+                                card.classList.remove("hidden");
+                                _context3.next = 8;
+                                return this._scale(card, 1);
 
-                            case 6:
+                            case 8:
+                                card.removeAttribute("style");
+
+                            case 9:
                             case "end":
                                 return _context3.stop();
                         }
@@ -8723,8 +8819,8 @@ var BoardView = function () {
             }));
         }
     }, {
-        key: "animateOponentCardDraw",
-        value: function animateOponentCardDraw(cardIndex) {
+        key: "animateOponentCardUse",
+        value: function animateOponentCardUse(cardIndex) {
             return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
                 var card;
                 return regeneratorRuntime.wrap(function _callee4$(_context4) {
@@ -8733,21 +8829,16 @@ var BoardView = function () {
                             case 0:
                                 card = this._getOponentCards()[cardIndex];
                                 _context4.next = 3;
-                                return this._translate(card, 0, 0);
+                                return this._scale(card, 1.2);
 
                             case 3:
                                 _context4.next = 5;
-                                return this._scale(card, .2);
+                                return this._translate(card, 0, 10);
 
                             case 5:
-                                card.classList.remove("hidden");
-                                _context4.next = 8;
-                                return this._scale(card, 1);
+                                card.classList.add("hidden");
 
-                            case 8:
-                                card.removeAttribute("style");
-
-                            case 9:
+                            case 6:
                             case "end":
                                 return _context4.stop();
                         }
@@ -8756,18 +8847,31 @@ var BoardView = function () {
             }));
         }
     }, {
-        key: "animateCardEffect",
-        value: function animateCardEffect(effect) {
+        key: "animateOponentCardDraw",
+        value: function animateOponentCardDraw(cardIndex) {
             return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+                var card;
                 return regeneratorRuntime.wrap(function _callee5$(_context5) {
                     while (1) {
                         switch (_context5.prev = _context5.next) {
                             case 0:
-                                return _context5.abrupt("return", new Promise(function (resolve) {
-                                    resolve();
-                                }));
+                                card = this._getOponentCards()[cardIndex];
+                                _context5.next = 3;
+                                return this._translate(card, 0, 0);
 
-                            case 1:
+                            case 3:
+                                _context5.next = 5;
+                                return this._scale(card, .2);
+
+                            case 5:
+                                card.classList.remove("hidden");
+                                _context5.next = 8;
+                                return this._scale(card, 1);
+
+                            case 8:
+                                card.removeAttribute("style");
+
+                            case 9:
                             case "end":
                                 return _context5.stop();
                         }
@@ -8844,6 +8948,11 @@ var BoardView = function () {
             return template;
         }
     }, {
+        key: "_effectTemplate",
+        value: function _effectTemplate(points) {
+            return points > 0 ? "+" + points : "" + points;
+        }
+    }, {
         key: "_scale",
         value: function _scale(elem, scale) {
             return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
@@ -8867,8 +8976,8 @@ var BoardView = function () {
             }));
         }
     }, {
-        key: "_translate",
-        value: function _translate(elem, x, y) {
+        key: "_fade",
+        value: function _fade(elem) {
             return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
                 return regeneratorRuntime.wrap(function _callee7$(_context7) {
                     while (1) {
@@ -8878,8 +8987,7 @@ var BoardView = function () {
                                     elem.addEventListener("transitionend", function (e) {
                                         resolve();
                                     });
-                                    elem.style.transform = "translateX(" + x + "vmin)";
-                                    elem.style.transform = "translateY(" + y + "vmin)";
+                                    elem.classList.add("fade");
                                 }));
 
                             case 1:
@@ -8890,6 +8998,30 @@ var BoardView = function () {
                 }, _callee7, this);
             }));
         }
+    }, {
+        key: "_translate",
+        value: function _translate(elem, x, y) {
+            return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+                return regeneratorRuntime.wrap(function _callee8$(_context8) {
+                    while (1) {
+                        switch (_context8.prev = _context8.next) {
+                            case 0:
+                                return _context8.abrupt("return", new Promise(function (resolve) {
+                                    elem.addEventListener("transitionend", function (e) {
+                                        resolve();
+                                    });
+                                    elem.style.transform = "translateX(" + x + "vmin)";
+                                    elem.style.transform = "translateY(" + y + "vmin)";
+                                }));
+
+                            case 1:
+                            case "end":
+                                return _context8.stop();
+                        }
+                    }
+                }, _callee8, this);
+            }));
+        }
     }]);
 
     return BoardView;
@@ -8897,6 +9029,6 @@ var BoardView = function () {
 
 exports.BoardView = BoardView;
 
-},{}]},{},[1,337])
+},{"../core/card-effect":333}]},{},[1,338])
 
 //# sourceMappingURL=bundle.js.map

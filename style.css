@@ -79,14 +79,20 @@ body {
     height: 100%;
     align-items: center;
 }
+.hearts-container {
+    display: inline;
+}
 .health-indicator:not(:first-child) {
     margin-left: -6vmin;
 }
-.health-indicator{
+.health-indicator {
     display: inline;
     font-size: 6vmin;
 }
-.shield-indicator{
+.shields-container {
+    display: inline;
+}
+.shields-indicator {
     display: inline;
     font-size: 6vmin;
 }
@@ -95,6 +101,20 @@ body {
     width: 30%;
     height: 100%;
     align-items: center;
+}
+.hearts-indicator {
+    display: inline;
+    font-size: 6vmin;
+}
+.fade {
+    transition: opacity 500ms ease-in-out;
+    zoom: 1;
+    filter: alpha(opacity=50);
+    opacity: 0;
+}
+.shield-indicator {
+    display: inline;
+    font-size: 6vmin;
 }
 .result {
     display: inline-block;
