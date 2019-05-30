@@ -14,6 +14,7 @@ body {
     -khtml-user-select: none; /* Konqueror HTML */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
+    font-family: 'Anonymous Pro', monospace;
 }
 #game-container {
     background-color: #7b9278;
@@ -57,12 +58,16 @@ body {
 .card-value-top {
     font-size: 4vmin;
     text-align: left;
+    margin-left: 1vmin;
+    margin-top: 1vmin;
     color: #dbf4b4;
     background-color: #4c625a;
 }
 .card-value-bottom {
     font-size: 4vmin;
     text-align: right;
+    margin-right: 1vmin;
+    margin-bottom: 1vmin;
     color: #dbf4b4;
     background-color: #4c625a;
 }
@@ -70,6 +75,7 @@ body {
     display: flex;
     width: 100vmin;
     height: 10vmin;
+    color: #dbf4b4;
     background-color: #4c625a;
 }
 .health {
