@@ -16,21 +16,28 @@ body {
     -ms-user-select: none; /* Internet Explorer/Edge */
     font-family: 'Anonymous Pro', monospace;
 }
-#game-container {
-    background-color: #7b9278;
-}
 .cards {
     display: flex;
     justify-content: center;
     width: 100vmin;
     height: 35vmin;
-    background-color: #7b9278;
+    /* background-color: #7b9278; */
+}
+.cards-background-container {
+    position:absolute;
+    width: 100vmin;
+    height: 35vmin;
+    overflow: hidden;
+    z-index:-1;
+    /* background-color: #7b9278; */
 }
 #oponent .cards {
     align-items: flex-start;
+    position: relative;
 }
 #player .cards {
     align-items: flex-end;
+    position: relative;
 }
 .card {
     display: flex;
@@ -80,8 +87,8 @@ body {
 }
 .health {
     display: inline-block;
-    width: 50%;
-    max-width: 50%;
+    width: 55%;
+    max-width: 55%;
     height: 100%;
     align-items: center;
 }
@@ -102,9 +109,12 @@ body {
     display: inline;
     font-size: 6vmin;
 }
+.shield-indicator:not(:first-child) {
+    margin-left: -4vmin;
+}
 .shield {
     display: inline-block;
-    width: 30%;
+    width: 25%;
     height: 100%;
     align-items: center;
 }
@@ -134,4 +144,20 @@ body {
 }
 #player-cards .card:hover {
     transform: scale(1.2);
+}
+.cards-background {
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background-color: #7b9278;
+    margin: -10px -10px -10px -10px;
+    z-index:-1;
+}
+.blur-tutorial {
+    filter: blur(3px) grayscale(95%);
+}
+.empty-icon {
+    filter: grayscale(95%);
 }

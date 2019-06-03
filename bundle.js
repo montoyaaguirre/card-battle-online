@@ -8931,7 +8931,7 @@ var BoardView = function () {
             var template = "";
             for (var i = 0; i < 10; i++) {
                 if (health <= i) {
-                    template += '<div class="health-indicator">🖤</div>\n';
+                    template += '<div class="health-indicator empty-icon">❤️</div>\n';
                 } else {
                     template += '<div class="health-indicator">❤️</div>\n';
                 }
@@ -8944,6 +8944,9 @@ var BoardView = function () {
             var template = "";
             for (var i = 0; i < shield; i++) {
                 template += '<div class="shield-indicator">🛡️</div>\n';
+            }
+            for (var _i = shield; _i < 2; _i++) {
+                template += '<div class="shield-indicator empty-icon">🛡️</div>\n';
             }
             return template;
         }
